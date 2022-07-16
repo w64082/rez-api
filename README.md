@@ -1,4 +1,4 @@
-_# REST API
+# REST API
 
 <b>This is school project for testing and education purposes - not ready to commercial use.</b>
 
@@ -18,7 +18,7 @@ This API allows you to connect front and backoffice services and perform all ope
 
 - visit: http://localhost:5050
 
-# TODO:
+# TODO - improvements:
 
 - structures for config based on .env file,
 - better validators and error handling,
