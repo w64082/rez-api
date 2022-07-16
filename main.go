@@ -32,11 +32,11 @@ func main() {
 	router.HandleFunc("/workers/{id:[0-9a-z_-]{36}}", endpoints.DeleteWorker).Methods("DELETE") // delete
 
 	// routes for visits
-	router.HandleFunc("/visits", endpoints.AddVisit).Methods("POST")                                        // add new
-	router.HandleFunc("/visits", endpoints.GetAllVisits).Methods("GET")                                     // get all
-	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.GetVisit).Methods("GET")                     // get single by id
-	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}/reservation", endpoints.VisitReservation).Methods("PUT") // make reservation for visit
-	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.DeleteVisit).Methods("DELETE")               // delete
+	router.HandleFunc("/visits", endpoints.AddVisit).Methods("POST")                                         // add new
+	router.HandleFunc("/visits", endpoints.GetAllVisits).Methods("GET")                                      // get all
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.GetVisit).Methods("GET")                      // get single by id
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}/reservation", endpoints.VisitReservation).Methods("POST") // make reservation for visit
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.DeleteVisit).Methods("DELETE")                // delete
 
 	fmt.Println("Starting API")
 	log.Fatal(http.ListenAndServe(":8080", router))
