@@ -1,8 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/rez-api/app"
+	"github.com/rez-api/endpoints"
 	"github.com/rez-api/resources"
 	"log"
 	"net/http"
@@ -10,53 +11,32 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func apiIndexPage(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-
-	resp := make(map[string]string)
-	resp["message"] = "API is ready to use"
-	jsonResp, _ := json.Marshal(resp)
-	w.Write(jsonResp)
-}
-
-func createEvent(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-
-	resp := make(map[string]string)
-	resp["message"] = "API is ready to use"
-	jsonResp, _ := json.Marshal(resp)
-	w.Write(jsonResp)
-}
-
 func main() {
 
-	_ = resources.GetPostgresConnection()
-
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", apiIndexPage)
+	router.HandleFunc("/", endpoints.ApiIndexPage)
+
+	container := &app.Container
+	container.DbHandle = resources.GetPostgresConnection()
 
 	// routes for places
-	router.HandleFunc("/places", createEvent).Methods("POST")        // add new
-	router.HandleFunc("/places", createEvent).Methods("GET")         // get all
-	router.HandleFunc("/places/{id}", createEvent).Methods("GET")    // get single by id
-	router.HandleFunc("/places/{id}", createEvent).Methods("DELETE") // delete
+	router.HandleFunc("/places", endpoints.AddPlace).Methods("POST")                          // add new
+	router.HandleFunc("/places", endpoints.GetAllPlaces).Methods("GET")                       // get all
+	router.HandleFunc("/places/{id:[0-9a-z_-]{36}}", endpoints.GetPlace).Methods("GET")       // get single by id
+	router.HandleFunc("/places/{id:[0-9a-z_-]{36}}", endpoints.DeletePlace).Methods("DELETE") // delete
 
 	// routes for workers
-	router.HandleFunc("/workers", createEvent).Methods("POST")     // add new
-	router.HandleFunc("/workers", createEvent).Methods("GET")      // get all
-	router.HandleFunc("/workers/{id}", createEvent).Methods("GET") // get single by id
-	router.HandleFunc("/workers", createEvent).Methods("DELETE")   // delete
+	router.HandleFunc("/workers", endpoints.AddWorker).Methods("POST")                          // add new
+	router.HandleFunc("/workers", endpoints.GetAllWorkers).Methods("GET")                       // get all
+	router.HandleFunc("/workers/{id:[0-9a-z_-]{36}}", endpoints.GetWorker).Methods("GET")       // get single by id
+	router.HandleFunc("/workers/{id:[0-9a-z_-]{36}}", endpoints.DeleteWorker).Methods("DELETE") // delete
 
 	// routes for visits
-	router.HandleFunc("/visits", createEvent).Methods("POST")     // add new
-	router.HandleFunc("/visits", createEvent).Methods("GET")      // get all
-	router.HandleFunc("/visits/{id}", createEvent).Methods("GET") // get single by id
-	router.HandleFunc("/visits", createEvent).Methods("DELETE")   // delete
-
-	// routes for reservation
-	router.HandleFunc("/reservation/{id}", createEvent).Methods("PUT") // add new - make reservation
+	router.HandleFunc("/visits", endpoints.AddVisit).Methods("POST")                                        // add new
+	router.HandleFunc("/visits", endpoints.GetAllVisits).Methods("GET")                                     // get all
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.GetVisit).Methods("GET")                     // get single by id
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}/reservation", endpoints.VisitReservation).Methods("PUT") // make reservation for visit
+	router.HandleFunc("/visits/{id:[0-9a-z_-]{36}}", endpoints.DeleteVisit).Methods("DELETE")               // delete
 
 	fmt.Println("Starting API")
 	log.Fatal(http.ListenAndServe(":8080", router))
