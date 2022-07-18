@@ -52,7 +52,7 @@ func GetAllPlaces(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := make(map[string]string)
 
-	sqlStatement := `SELECT id, name, created_at, deleted_at FROM places WHERE deleted_at IS NULL;`
+	sqlStatement := `SELECT id, name, created_at, deleted_at FROM places WHERE deleted_at IS NULL ORDER BY created_at DESC;`
 	rows, _ := app.Container.DbHandle.Query(sqlStatement)
 
 	defer rows.Close()

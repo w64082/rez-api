@@ -63,7 +63,7 @@ func GetAllVisits(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := make(map[string]string)
 
-	sqlStatement := `SELECT id, id_place, id_worker, date_start, date_to, is_reserved, client_name, client_surname, created_at, deleted_at FROM visits WHERE deleted_at IS NULL;`
+	sqlStatement := `SELECT id, id_place, id_worker, date_start, date_to, is_reserved, client_name, client_surname, created_at, deleted_at FROM visits WHERE deleted_at IS NULL ORDER BY created_at DESC;`
 	rows, _ := app.Container.DbHandle.Query(sqlStatement)
 
 	defer rows.Close()
